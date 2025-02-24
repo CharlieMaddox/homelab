@@ -2,13 +2,14 @@
 services:
     filebrowser:
         image: 'filebrowser/filebrowser:s6'
+        container_name: filebrowser
         environment:
-            - PUID=$(id
-            - PGID=$(id
-        network_mode: bridge
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/America/Mexico_City
         ports:
             - '8484:80'
         volumes:
             - '/:/srv'
-            - '/mnt/hdd/data_services/filebrowser/database/filebrowser.db:/database/filebrowser.db'
-            - '/mnt/hdd/data_services/filebrowser/settings/settings.json:/config/settings.json'
+            - '/mnt/hdd/data_services/filebrowser/database:/database/filebrowser.db'
+            - '/mnt/hdd/data_services/filebrowser/settings:/config/settings.json'
