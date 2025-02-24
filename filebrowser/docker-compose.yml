@@ -9,7 +9,6 @@ services:
         environment:
             - PUID=$(id
             - PGID=$(id
-        user: 'true'
         ports:
             - '8484:80'
         image: 'filebrowser/filebrowser:s6'
