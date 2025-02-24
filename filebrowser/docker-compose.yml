@@ -4,8 +4,8 @@ services:
     filebrowser:
         volumes:
             - '/:/srv'
-            - '/mnt/hdd/data_services/filebrowser/filebrowser.db:/database/filebrowser.db'
-            - '/mnt/hdd/data_services/filebrowser/settings.json:/config/settings.json'
+            - '/mnt/hdd/data_services/filebrowser/database/filebrowser.db:/database/filebrowser.db'
+            - '/mnt/hdd/data_services/filebrowser/settings/settings.json:/config/settings.json'
         environment:
             - PUID=$(id
             - PGID=$(id
