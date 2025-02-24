@@ -11,5 +11,5 @@ services:
             - '8484:80'
         volumes:
             - '/:/srv'
-            - '/mnt/hdd/data_services/filebrowser/database:/database/filebrowser.db'
-            - '/mnt/hdd/data_services/filebrowser/settings:/config/settings.json'
+            - '/mnt/hdd/data_services/filebrowser/database/filebrowser.db:/database/filebrowser.db'
+            - '/mnt/hdd/data_services/filebrowser/config/.filebrowser.json:/config/.filebrowser.json'
