@@ -1,14 +1,14 @@
 
-version: '3.3'
 services:
     filebrowser:
+        image: 'filebrowser/filebrowser:s6'
+        environment:
+            - PUID=$(id
+            - PGID=$(id
+        network_mode: bridge
+        ports:
+            - '8484:80'
         volumes:
             - '/:/srv'
             - '/mnt/hdd/data_services/filebrowser/database/filebrowser.db:/database/filebrowser.db'
             - '/mnt/hdd/data_services/filebrowser/settings/settings.json:/config/settings.json'
-        environment:
-            - PUID=$(id
-            - PGID=$(id
-        ports:
-            - '8484:80'
-        image: 'filebrowser/filebrowser:s6'
