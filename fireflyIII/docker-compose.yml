@@ -1,0 +1,37 @@
+services:
+  app:
+    image: fireflyiii/core:latest
+    hostname: app
+    container_name: firefly_III
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /mnt/hdd/data_services/firefly_iii/upload:/var/www/html/storage/upload
+    networks:
+      - firefly_iii
+    ports:
+      - 8383:8080
+
+  cron:
+    #
+    # To make this work, set STATIC_CRON_TOKEN in your .env file or as an environment variable and replace REPLACEME below
+    # The STATIC_CRON_TOKEN must be *exactly* 32 characters long
+    #
+    image: alpine
+    restart: unless-stopped
+    container_name: firefly_iii_cron
+    env_file: .env
+    command: sh -c "
+      apk add tzdata
+      && ln -s /usr/share/zoneinfo/${TZ} /etc/localtime
+      | echo \"0 3 * * * wget -qO- http://app:8080/api/v1/cron/REPLACEME;echo\" 
+      | crontab - 
+      && crond -f -L /dev/stdout"
+    networks:
+      - firefly_iii
+
+
+
+networks:
+  firefly_iii:
+    driver: bridge
