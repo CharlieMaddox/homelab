@@ -1,0 +1,16 @@
+services:
+  filebrowser-quantum:
+    image: gtstef/filebrowser:stable
+    container_name: filebrowser-quantum
+
+    ports:
+      - "8090:80"
+
+    volumes:
+      # Datos/configuración persistente de Quantum
+      - /mnt/hdd/data_services/filebrowser-quantum/data:/home/filebrowser/data
+
+      # Carpeta que queremos visualizar
+      - /mnt/hdd/data_services:/data_services:ro
+
+    restart: unless-stopped
