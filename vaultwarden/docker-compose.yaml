@@ -1,0 +1,26 @@
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+
+    environment:
+      DOMAIN: "https://vw.mdxlab.dev"
+      ADMIN_TOKEN: "${ADMIN_TOKEN}"
+      SIGNUPS_ALLOWED: "false"
+
+      SMTP_HOST: "192.168.0.103"
+      SMTP_PORT: "465"
+      SMTP_SECURITY: "force_tls"
+      SMTP_FROM: "noreply@mdxlab.dev"
+      SMTP_FROM_NAME: "MDXLAB Vaultwarden"
+      SMTP_USERNAME: "noreply@mdxlab.dev"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      SMTP_ACCEPT_INVALID_CERTS: "true"
+      SMTP_ACCEPT_INVALID_HOSTNAMES: "true"
+
+    volumes:
+      - /mnt/hdd/data_services/vaultwarden:/data
+
+    ports:
+      - "8222:80"
