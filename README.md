@@ -1,120 +1,225 @@
-# MI PROYECTO PERSONAL DE HOMELAB
+# MDXLAB — Homelab
 
-> ### ¿Por qué el proyecto? 
-> Este proyecto comienza como el resultado de tener computadoras viejitas arrumbadas en casa y la necesidad de aprender todo lo que se pueda respecto a la administración de servidores, así como a usar nuevas tecnologías. Además, surge a demás de querer tener mi propio ecosistema y nube privada.
+> Proyecto personal de infraestructura, self-hosting y aprendizaje.
 
-> ## Comandos utiles
+## ¿Por qué el proyecto?
 
+MDXLAB nació a partir de reutilizar computadoras que estaban sin uso y del interés por aprender sobre administración de servidores, redes, Docker y tecnologías de self-hosting.
 
-```yml
-Desplegar un contenedor desde el arhivo.yml
-    docker compose up -d
+Con el tiempo evolucionó hacia un ecosistema propio para alojar servicios, almacenamiento y una nube privada, manteniendo control sobre la infraestructura y los datos.
 
-docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Size}}"
- ```
+El dominio utilizado por el homelab es:
 
-> ## Contenedores
-
-
-### 1.- File Browser [Dockerhub](https://hub.docker.com/r/filebrowser/filebrowser)
-```txt
-File Browser es una aplicación web que permite explorar, administrar y compartir archivos de un servidor
-de forma sencilla y visual. Funciona como un gestor de archivos accesible desde un navegador, sin 
-necesidad de usar SSH o FTP.
-
-📌 Características principales:
-
-✅ Interfaz web intuitiva para navegar por el sistema de archivos.
-✅ Subida, descarga y edición de archivos directamente desde el navegador.
-✅ Soporte para múltiples usuarios con permisos personalizados.
-✅ Integración con autenticación y certificados SSL.
-✅ Fácil instalación con Docker o binario independiente.
-✅ Es ideal para gestionar archivos en servidores locales o en la nube sin depender de clientes FTP o comandos de terminal. 🚀
+```text
+mdxlab.dev
 ```
 
-### 2.- Heimdall [dockerhub](https://hub.docker.com/r/linuxserver/heimdall)
-```txt
-Heimdall es un panel de inicio personalizable que permite organizar y acceder fácilmente a aplicaciones, 
-servicios y sitios web desde una interfaz centralizada. Es especialmente útil en homelabs y servidores, 
-ya que permite tener un acceso rápido a herramientas como File Browser, Jellyfin, Nextcloud, Pi-hole, entre otros.
+---
 
-📌 Características principales:
-✅ Interfaz limpia y personalizable con iconos y descripciones de cada servicio.
-✅ Soporte para enlaces directos a aplicaciones locales o en la nube.
-✅ Modo "Enhanced" que muestra información en vivo de ciertos servicios (como carga del sistema o estado de monitoreo).
-✅ Fácil instalación con Docker y configuración sin necesidad de base de datos.
+## Infraestructura
+
+Actualmente el homelab se divide principalmente en dos nodos:
+
+| Nodo | IP | Rol |
+|---|---|---|
+| Nodo 102 | `192.168.0.102` | Infraestructura base: Pi-hole y MariaDB |
+| Nodo 103 | `192.168.0.103` | Docker, aplicaciones, almacenamiento, proxy, túneles y correo |
+
+La infraestructura utiliza, entre otros componentes:
+
+- Docker / Docker Compose
+- Pi-hole
+- Nginx Proxy Manager
+- Cloudflare DNS y Cloudflare Tunnel
+- MariaDB
+- Stalwart
+- Brevo como SMTP relay
+
+La información técnica detallada y vigente se mantiene en la documentación de arquitectura.
+
+---
+
+## Servicios activos
+
+| Servicio | Función | Acceso |
+|---|---|---|
+| Nextcloud | Nube privada / archivos | LAN + Internet |
+| Immich | Gestión y respaldo de fotografías | LAN + Internet |
+| Nginx Proxy Manager | Reverse proxy y certificados TLS | LAN |
+| FileBrowser Quantum | Gestión web de archivos | LAN |
+| Homarr | Dashboard del homelab | LAN |
+| Vaultwarden | Gestor de contraseñas | LAN |
+| Stalwart | Servidor de correo / SMTP central | Interno |
+| Cloudflared | Cloudflare Tunnel | Infraestructura |
+| Pi-hole | DNS de la LAN | LAN |
+| MariaDB | Base de datos de infraestructura | Interno |
+
+> La presencia de un directorio o `docker-compose.yaml` en este repositorio **no implica que el servicio se encuentre actualmente desplegado**. El repositorio conserva también definiciones de servicios anteriores, pruebas y proyectos que pueden reutilizarse en el futuro.
+
+---
+
+## Acceso a servicios
+
+MDXLAB diferencia entre servicios disponibles únicamente dentro de la LAN y servicios publicados hacia Internet.
+
+Actualmente, los principales servicios públicos son:
+
+| Servicio | LAN | Internet |
+|---|---|---|
+| Nextcloud | `cd.mdxlab.dev` | `nc.mdxlab.dev` |
+| Immich | `mi.mdxlab.dev` | `im.mdxlab.dev` |
+
+Otros servicios administrativos y privados permanecen únicamente dentro de la red local.
+
+Para conocer todos los FQDN, rutas, puertos y mecanismos de resolución, consultar el documento de arquitectura.
+
+---
+
+## Estructura del repositorio
+
+El repositorio organiza principalmente cada servicio en su propio directorio:
+
+```text
+homelab/
+├── AGENTS.md
+├── README.md
+├── docs/
+│   ├── arquitectura_homelab_mdxlab_activa.md
+│   └── roadmap_historico_homelab_mdxlab_nuevo.md
+│
+├── cloudflare/
+├── filebrowser-quantum/
+├── homarr/
+├── immich/
+├── nextcloud/
+├── nginx-proxy-manager/
+├── stalwart/
+├── vaultwarden/
+└── ...
 ```
 
-### 3.- Jellyfin [Dockerhub](https://hub.docker.com/r/jellyfin/jellyfin)
+Los nombres concretos de algunos directorios pueden variar conforme evolucione el repositorio.
 
-```txt
-Jellyfin es un servidor multimedia de código abierto que te permite gestionar y transmitir tu colección de películas, series, música y fotos a cualquier dispositivo sin depender de servicios en la nube como Netflix o Spotify.
+Los directorios de servicios contienen principalmente sus definiciones Docker Compose y archivos versionables relacionados.
 
-📌 Características principales:
-✅ Streaming local y remoto: Accede a tu contenido desde PC, móviles, Smart TVs y más.
-✅ Transcodificación en tiempo real: Optimiza el contenido para distintos dispositivos.
-✅ Soporte para múltiples usuarios: Cada usuario tiene su propia biblioteca y progreso de reproducción.
-✅ Clientes en varias plataformas: Apps para Android, iOS, Roku, Fire TV, Kodi y navegadores web.
-✅ Sin suscripciones ni restricciones: A diferencia de Plex o Emby, Jellyfin es 100% gratuito y sin funciones premium bloqueadas.
-```
-### 4.- Nextcloud [Dockerhub](https://hub.docker.com/r/linuxserver/nextcloud)
-```txt
-Nextcloud es una plataforma de almacenamiento en la nube de código abierto, similar a Google Drive o Dropbox, pero alojada en tu propio servidor. Te permite sincronizar, compartir y proteger archivos, además de ofrecer funciones adicionales como calendarios, contactos, edición de documentos y videollamadas.
+---
 
-📌 Características principales:
-✅ Almacenamiento y sincronización de archivos en múltiples dispositivos.
-✅ Compartición segura con enlaces protegidos por contraseña y permisos personalizados.
-✅ Extensiones y apps para añadir funciones como edición de documentos (Collabora/ONLYOFFICE), notas, correo, calendario, etc.
-✅ Cifrado y control de privacidad, sin depender de servicios en la nube de terceros.
-✅ Accesible desde cualquier navegador o mediante aplicaciones para Windows, Linux, macOS, Android e iOS.
-```
-### 5.- Nginx Proxy Manager [Dockerhub](https://hub.docker.com/r/jc21/nginx-proxy-manager)
-```txt
-Nginx Proxy Manager es una herramienta que simplifica la configuración de Nginx como proxy inverso, permitiéndote redirigir tráfico a diferentes servicios o contenedores de manera fácil y con una interfaz web.
+## Documentación
 
-📌 Principales funciones:
-✅ Proxy inverso → Redirige tráfico HTTP/HTTPS a diferentes contenedores o servidores.
-✅ Gestión de certificados SSL → Soporte nativo para Let’s Encrypt con renovación automática.
-✅ Interfaz web → No necesitas editar archivos manualmente.
-✅ Autenticación → Protege rutas con usuario y contraseña.
-✅ Reglas de redireccionamiento → Personaliza accesos con diferentes dominios o subdominios.
-```
-### 6.- Uptime Kuma [Dockerhub](https://hub.docker.com/r/linuxserver/nextcloud)
-```txt
-Uptime Kuma es una herramienta de monitoreo de servidores y servicios que te permite verificar si tus sitios web, contenedores o dispositivos están en línea. Es una alternativa autoalojada y de código abierto a servicios como Uptime Robot.
+### Arquitectura activa
 
-📌 Características principales:
-✅ Monitoreo de múltiples servicios (HTTP, TCP, Ping, DNS, Docker, etc.).
-✅ Notificaciones personalizadas en Telegram, Discord, Slack, correo, entre otros.
-✅ Historial de disponibilidad con estadísticas y tiempos de respuesta.
-✅ Interfaz web moderna y fácil de usar.
-✅ Instalación simple con Docker.
+```text
+docs/arquitectura_homelab_mdxlab_activa.md
 ```
-### 7.- Wallos [Dockerhub](https://hub.docker.com/r/linuxserver/nextcloud)
-```txt
-Wallos App es una aplicación autoalojada y de código abierto diseñada para gestionar y organizar suscripciones personales, permitiendo un mejor control de pagos recurrentes. Es una alternativa privada a servicios como Truebill o Subby.
 
-📌 Características principales:
-✅ Registro y seguimiento de suscripciones con fechas de vencimiento.
-✅ Organización de pagos por categorías personalizables.
-✅ Soporte para múltiples monedas y conversión automática.
-✅ Notificaciones de próximos pagos a través de correo, Telegram y Discord.
-✅ Interfaz web intuitiva con opciones de personalización.
-✅ Instalación sencilla con Docker. 
-```
-### 8.- Firefly III [Dockerhub](https://hub.docker.com/r/fireflyiii/core)
-```txt
-Firefly III es una aplicación de gestión financiera autoalojada y de código abierto que permite realizar un seguimiento detallado de ingresos, gastos, presupuestos y cuentas bancarias. Es una alternativa privada a herramientas como YNAB o Mint.
+Es la referencia del **estado funcional vigente** de MDXLAB.
 
-📌 Características principales:
-✅ Gestión de cuentas bancarias con soporte para múltiples monedas.
-✅ Presupuestos y control de gastos con categorías personalizables.
-✅ Importación de transacciones desde archivos CSV, OFX, QIF, JSON, entre otros.
-✅ Informes detallados con gráficos y análisis financieros.
-✅ API integrada para automatizar transacciones y conectar otras aplicaciones.
-✅ Instalación sencilla con Docker.
+Incluye:
+
+- servidores;
+- hardware y almacenamiento;
+- servicios activos;
+- dominios;
+- DNS;
+- Nginx Proxy Manager;
+- Cloudflare Tunnel;
+- puertos;
+- persistencia;
+- rutas importantes;
+- infraestructura de correo;
+- notas técnicas permanentes.
+
+### Roadmap e histórico
+
+```text
+docs/roadmap_historico_homelab_mdxlab_nuevo.md
 ```
-### numero.- Nueva Herramienta [Dockerhub](https://hub.docker.com)
-```txt
-Descripcion de lo que es y/o hace la herramienta que se esta implementando 
+
+Contiene:
+
+- mejoras pendientes;
+- tareas en progreso;
+- evolución de la infraestructura;
+- decisiones técnicas relevantes;
+- incidencias y soluciones resumidas.
+
+El histórico se mantiene deliberadamente breve para conservar únicamente conocimiento reutilizable.
+
+### Instrucciones para agentes
+
+```text
+AGENTS.md
 ```
+
+Define cómo deben trabajar los agentes de IA sobre este repositorio, incluyendo criterios de documentación, Docker Compose, secretos, troubleshooting y actualización de la arquitectura.
+
+---
+
+## Docker Compose
+
+Los servicios Docker se gestionan mediante Docker Compose.
+
+Comandos habituales en los servidores MDXLAB:
+
+```bash
+# Levantar o actualizar un servicio
+sudo docker compose up -d
+
+# Ver contenedores
+sudo docker ps
+
+# Ver contenedores con formato compacto
+sudo docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
+
+# Consultar logs
+sudo docker logs --tail 100 <contenedor>
+
+# Seguir logs
+sudo docker logs -f <contenedor>
+```
+
+Normalmente los comandos de Compose deben ejecutarse desde el directorio correspondiente al servicio.
+
+---
+
+## Seguridad
+
+Los secretos **no deben versionarse** en el repositorio.
+
+Esto incluye:
+
+- contraseñas;
+- API keys;
+- SMTP keys;
+- tokens;
+- claves privadas TLS;
+- credenciales administrativas;
+- archivos `.env` que contengan información sensible.
+
+Los Compose deben utilizar variables de entorno cuando corresponda y los archivos sensibles deben permanecer excluidos mediante `.gitignore`.
+
+Nunca incluir valores reales de secretos en la documentación.
+
+---
+
+## Filosofía del proyecto
+
+MDXLAB es un proyecto en evolución. La prioridad es mantener una infraestructura que permita aprender, experimentar y alojar servicios útiles sin perder claridad sobre cómo está construida.
+
+La documentación se divide deliberadamente entre:
+
+```text
+README
+  └─ Qué es el proyecto y cómo navegar el repositorio
+
+Arquitectura
+  └─ Cómo funciona MDXLAB actualmente
+
+Roadmap / histórico
+  └─ Qué falta, qué ha cambiado y qué problemas relevantes se encontraron
+
+AGENTS
+  └─ Cómo deben trabajar los agentes sobre el repositorio
+```
+
+Esta separación busca evitar que un único documento termine convirtiéndose simultáneamente en inventario, manual, roadmap y bitácora.
