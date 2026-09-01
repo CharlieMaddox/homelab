@@ -1,0 +1,32 @@
+services:
+  stalwart:
+    image: stalwartlabs/stalwart:v0.16
+    container_name: stalwart
+    restart: unless-stopped
+
+    ports:
+      # Administración / Web
+      - "8080:8080"
+      # SMTP Submission
+      - "587:587"
+      # SMTP Submission sobre TLS
+      - "465:465"
+      # --- Puertos reservados para uso futuro ---
+      # HTTPS nativo de Stalwart
+      # No habilitar mientras Nginx Proxy Manager use el 443 del host.
+      # - "443:443"
+      # SMTP / recepción directa entre servidores
+      # - "25:25"
+      # IMAP
+      # - "143:143"
+      # IMAPS
+      # - "993:993"
+      # POP3
+      # - "110:110"
+      # POP3S
+      # - "995:995"
+      # ManageSieve
+      # - "4190:4190"
+    volumes:
+      - /mnt/hdd/data_services/stalwart/config:/etc/stalwart
+      - /mnt/hdd/data_services/stalwart/data:/var/lib/stalwart
