@@ -1,6 +1,6 @@
 # Roadmap e histórico técnico --- MDXLAB
 
-> Documento breve de evolución, incidencias y mejoras pendientes. El estado funcional vigente se mantiene en `arquitectura_homelab_mdxlab.md`.
+> Documento breve de evolución, incidencias y mejoras pendientes. El estado funcional vigente se mantiene en `arquitectura_homelab_mdxlab_activa.md`.
 
 ## 1. Roadmap actual
 
@@ -108,7 +108,7 @@ Cada nuevo servicio deberá documentar, como mínimo:
 
 Cuando una mejora se complete:
 
-1. Se actualiza `arquitectura_homelab_mdxlab.md` con el nuevo estado vigente.
+1. Se actualiza `arquitectura_homelab_mdxlab_activa.md` con el nuevo estado vigente.
 2. Se marca la mejora como completada en este roadmap.
 3. Solo si aporta valor futuro, se añade una entrada histórica breve.
 

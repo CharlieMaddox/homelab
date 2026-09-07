@@ -6,33 +6,33 @@
 
 La infraestructura utiliza rutas separadas para el acceso **LAN** y el acceso **público mediante Cloudflare**. Los servicios internos utilizan Pi-hole y Nginx Proxy Manager; únicamente Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 
-```text
-┌──────────────────────────────────────────── MDXLAB ────────────────────────────────────────────┐
-│                                                                                               │
-│  ACCESO LAN                                             ACCESO PÚBLICO                        │
-│                                                                                               │
-│  Pi-hole DNS                                            Cloudflare DNS + Tunnel                │
-│  192.168.0.102                                          │                                      │
-│       │                                                 ├──────────────┬──────────────┐         │
-│       ▼                                                 ▼              ▼              │         │
-│  *.mdxlab.dev LAN                                  nc.mdxlab.dev  im.mdxlab.dev      │         │
-│       │                                                 │              │              │         │
-│       ▼                                                 ▼              ▼              │         │
-│  192.168.0.103                                    Cloudflare       Cloudflare          │         │
-│       │                                               Tunnel           Tunnel            │         │
-│       ▼                                                 │              │              │         │
-│  Nginx Proxy Manager                                    ▼              ▼              │         │
-│       │                                             Nextcloud        Immich            │         │
-│       ├─ Nextcloud                                                                            │
-│       ├─ Immich                                                                               │
-│       ├─ NPM                                                                                  │
-│       ├─ FileBrowser Quantum                                                                  │
-│       ├─ Homarr                                                                               │
-│       └─ Vaultwarden                                                                          │
-│                                                                                               │
-│  CORREO: Aplicaciones ──SMTP──► Stalwart ──SMTP Relay──► Brevo ──► Internet                  │
-│                                                                                               │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph LAN[Acceso LAN]
+        pihole[Pi-hole DNS<br/>192.168.0.102] --> lan_fqdn[*.mdxlab.dev LAN]
+        lan_fqdn --> node103[192.168.0.103]
+        node103 --> npm[Nginx Proxy Manager]
+        npm --> nextcloud[Nextcloud]
+        npm --> immich[Immich]
+        npm --> npm_ui[NPM]
+        npm --> filebrowser[FileBrowser Quantum]
+        npm --> homarr[Homarr]
+        npm --> vaultwarden[Vaultwarden]
+        npm --> stalwart[Stalwart]
+    end
+
+    subgraph Publico[Acceso público]
+        cloudflare_dns[Cloudflare DNS] --> nc_fqdn[nc.mdxlab.dev]
+        cloudflare_dns --> im_fqdn[im.mdxlab.dev]
+        nc_fqdn --> nc_tunnel[Cloudflare Tunnel]
+        im_fqdn --> im_tunnel[Cloudflare Tunnel]
+        nc_tunnel --> nextcloud
+        im_tunnel --> immich
+    end
+
+    aplicaciones[Aplicaciones] -->|SMTP| stalwart
+    stalwart -->|SMTP Relay| brevo[Brevo]
+    brevo --> internet[Internet]
 ```
 
 ---
@@ -81,13 +81,14 @@ La infraestructura utiliza rutas separadas para el acceso **LAN** y el acceso **
 
 ### Red física
 
-```text
-Internet ──► Modem ISP ──► Steren AC1200 ──► TP-Link TL-SF1005D (10/100 Mbps)
-                                                  │
-                                      ┌───────────┼───────────┐
-                                      ▼           ▼           ▼
-                                   Nodo 102    Nodo 103    PC personal
-                                   100 Mbps    100 Mbps
+```mermaid
+flowchart TB
+    internet[Internet] --> modem[Modem ISP]
+    modem --> router[Steren AC1200]
+    router --> switch[TP-Link TL-SF1005D<br/>10/100 Mbps]
+    switch -->|100 Mbps| nodo102[Nodo 102]
+    switch -->|100 Mbps| nodo103[Nodo 103]
+    switch --> pc[PC personal]
 ```
 
 El `TL-SF1005D` limita actualmente el segmento cableado a **100 Mbps**.
@@ -106,7 +107,7 @@ El `TL-SF1005D` limita actualmente el segmento cableado a **100 Mbps**.
 | FileBrowser Quantum | `fl.mdxlab.dev` | — | Solo LAN |
 | Homarr | `hr.mdxlab.dev` | — | Solo LAN |
 | Vaultwarden | `vw.mdxlab.dev` | — | Solo LAN |
-| Stalwart | `mail.mdxlab.dev` | — | Servicio interno; integración web pendiente |
+| Stalwart | `stt.mdxlab.dev` | — | Solo LAN |
 
 Los dominios públicos `nc.mdxlab.dev` e `im.mdxlab.dev` **no tienen override DNS local en Pi-hole**.
 
@@ -114,44 +115,40 @@ Los dominios públicos `nc.mdxlab.dev` e `im.mdxlab.dev` **no tienen override DN
 
 ## 4. Ruta de Nextcloud
 
-```text
-LAN                                              INTERNET
+```mermaid
+flowchart LR
+    subgraph LAN
+        cd[cd.mdxlab.dev] --> pihole[Pi-hole]
+        pihole --> node103[192.168.0.103]
+        node103 --> npm[Nginx Proxy Manager]
+        npm -->|HTTPS| nextcloud[Nextcloud<br/>192.168.0.103:8450]
+    end
 
-cd.mdxlab.dev                                    nc.mdxlab.dev
-      │                                                │
-      ▼                                                ▼
-Pi-hole                                           Cloudflare DNS
-      │                                                │
-      ▼                                                ▼
-192.168.0.103                                    Cloudflare Tunnel
-      │                                                │
-      ▼                                                │ HTTPS / No TLS Verify
-Nginx Proxy Manager                                    ▼
-      │ HTTPS                                    localhost:8450
-      ▼                                                │
-192.168.0.103:8450 ─────────────► Nextcloud ◄──────────┘
+    subgraph INTERNET
+        nc[nc.mdxlab.dev] --> cloudflare_dns[Cloudflare DNS]
+        cloudflare_dns --> tunnel[Cloudflare Tunnel]
+        tunnel -->|HTTPS / No TLS Verify<br/>localhost:8450| nextcloud
+    end
 ```
 
 ---
 
 ## 5. Ruta de Immich
 
-```text
-LAN                                              INTERNET
+```mermaid
+flowchart LR
+    subgraph LAN
+        mi[mi.mdxlab.dev] --> pihole[Pi-hole]
+        pihole --> node103[192.168.0.103]
+        node103 --> npm[Nginx Proxy Manager]
+        npm -->|HTTP| immich[Immich<br/>192.168.0.103:2283]
+    end
 
-mi.mdxlab.dev                                    im.mdxlab.dev
-      │                                                │
-      ▼                                                ▼
-Pi-hole                                           Cloudflare DNS
-      │                                                │
-      ▼                                                ▼
-192.168.0.103                                    Cloudflare Tunnel
-      │                                                │ HTTP
-      ▼                                                ▼
-Nginx Proxy Manager                              localhost:2283
-      │ HTTP                                           │
-      ▼                                                │
-192.168.0.103:2283 ───────────────► Immich ◄───────────┘
+    subgraph INTERNET
+        im[im.mdxlab.dev] --> cloudflare_dns[Cloudflare DNS]
+        cloudflare_dns --> tunnel[Cloudflare Tunnel]
+        tunnel -->|HTTP<br/>localhost:2283| immich
+    end
 ```
 
 ---
@@ -166,6 +163,7 @@ Nginx Proxy Manager                              localhost:2283
 | `fl.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `hr.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `vw.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
+| `stt.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `nc.mdxlab.dev` | DNS público de Cloudflare |
 | `im.mdxlab.dev` | DNS público de Cloudflare |
 
@@ -209,6 +207,7 @@ mdxlab.dev
 | `fl.mdxlab.dev` | FileBrowser Quantum | Configurado | Host port según despliegue |
 | `hr.mdxlab.dev` | Homarr | HTTP | `192.168.0.103:7575` |
 | `vw.mdxlab.dev` | Vaultwarden | HTTP | `192.168.0.103:8222` |
+| `stt.mdxlab.dev` | Stalwart WebUI | HTTP | `192.168.0.103:8080` |
 
 > Immich en `2283` utiliza HTTP. Nextcloud utiliza HTTPS en `8450`.
 
@@ -306,21 +305,11 @@ Las credenciales SMTP y el `ADMIN_TOKEN` se mantienen fuera del Compose mediante
 
 ### Arquitectura
 
-```text
-Aplicaciones MDXLAB
-        │
-        │ SMTP autenticado
-        │ 465 / TLS implícito
-        ▼
-     Stalwart
-        │
-        │ SMTP Relay
-        │ 587 / STARTTLS
-        ▼
-       Brevo
-        │
-        ▼
-     Internet
+```mermaid
+flowchart LR
+    aplicaciones[Aplicaciones MDXLAB] -->|SMTP autenticado<br/>465 / TLS implícito| stalwart[Stalwart]
+    stalwart -->|SMTP Relay<br/>587 / STARTTLS| brevo[Brevo]
+    brevo --> internet[Internet]
 ```
 
 ### Stalwart
@@ -329,7 +318,8 @@ Aplicaciones MDXLAB
 |---|---|
 | Imagen | `stalwartlabs/stalwart:v0.16` |
 | Versión observada | `0.16.20` |
-| Hostname | `mail.mdxlab.dev` |
+| Acceso Web LAN | `stt.mdxlab.dev` mediante Pi-hole y Nginx Proxy Manager |
+| Hostname del servidor | `mail.mdxlab.dev` |
 | Dominio por defecto | `mdxlab.dev` |
 | Almacenamiento | RocksDB |
 | Directorio de cuentas | Interno |
@@ -343,6 +333,8 @@ Aplicaciones MDXLAB
 | TLS hacia Brevo | STARTTLS |
 | Ruta local | `local` |
 | Ruta externa | `Brevo` |
+
+La integración web LAN de Stalwart está finalizada. `stt.mdxlab.dev` es exclusivamente el FQDN de acceso a la WebUI; `mail.mdxlab.dev` es la identidad SMTP del servidor y `mdxlab.dev` es el dominio de correo.
 
 ### Listeners observados
 
@@ -391,32 +383,25 @@ Los MX públicos de `mdxlab.dev` permanecen en **Cloudflare Email Routing**, no 
 
 ## 14. Diseño actual
 
-```text
-                                     MDXLAB
-                                       │
-                 ┌─────────────────────┴─────────────────────┐
-                 │                                           │
-                LAN                                       INTERNET
-                 │                                           │
-            Pi-hole DNS                               Cloudflare DNS
-                 │                                           │
-                 ▼                                           ▼
-        Nginx Proxy Manager                           Cloudflare Tunnel
-          │   │   │   │   │                              │       │
-          │   │   │   │   │                              ▼       ▼
-          │   │   │   │   │                         Nextcloud   Immich
-          │   │   │   │   │
-          ▼   ▼   ▼   ▼   ▼
-         NC  Imm  FBQ Homarr Vaultwarden
-                              │
-                              │ SMTP 465
-                              ▼
-                           Stalwart
-                              │
-                              │ SMTP 587 / STARTTLS
-                              ▼
-                            Brevo
-                              │
-                              ▼
-                           Internet
+```mermaid
+flowchart TB
+    subgraph LAN
+        pihole[Pi-hole DNS] --> npm[Nginx Proxy Manager]
+        npm --> nextcloud[Nextcloud]
+        npm --> immich[Immich]
+        npm --> filebrowser[FileBrowser Quantum]
+        npm --> homarr[Homarr]
+        npm --> vaultwarden[Vaultwarden]
+        npm --> stalwart[Stalwart]
+    end
+
+    subgraph INTERNET
+        cloudflare_dns[Cloudflare DNS] --> tunnel[Cloudflare Tunnel]
+        tunnel --> nextcloud
+        tunnel --> immich
+    end
+
+    vaultwarden -->|SMTP 465| stalwart
+    stalwart -->|SMTP 587 / STARTTLS| brevo[Brevo]
+    brevo --> internet[Internet]
 ```

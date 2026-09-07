@@ -14,6 +14,7 @@ Este archivo define las reglas que deben seguir los agentes al analizar o modifi
 - No inventar puertos, rutas, variables, dominios, versiones ni estados no confirmados.
 - Si existe una discrepancia entre documentación y Compose, señalarla antes de modificarla.
 - Preferir cambios pequeños, explícitos y fáciles de revisar.
+- No intentar pruebas, validaciones operativas ni ejecutar comandos contra servicios desde el PC personal: los servicios se ejecutan directamente en los servidores. Limitarse al análisis de la configuración y documentación versionadas, salvo instrucción explícita del usuario.
 
 ## 2. Documentación
 
@@ -57,7 +58,9 @@ Para información de inventario utilizar **tablas Markdown reales con pipes**:
 
 No convertir estas tablas a listas, tablas ASCII, tablas Pandoc ni HTML.
 
-Mantener encabezados numerados cuando el documento ya utilice numeración, bloques `text` para diagramas ASCII y backticks para archivos, rutas, FQDN y puertos.
+Mantener encabezados numerados cuando el documento ya utilice numeración y backticks para archivos, rutas, FQDN y puertos.
+
+Utilizar Mermaid para diagramas de arquitectura, red, rutas y flujos. Preferir `flowchart TB` para arquitecturas jerárquicas y `flowchart LR` para flujos y rutas. Utilizar `subgraph` cuando ayude a representar capas o zonas. Mantener los diagramas simples y legibles; no utilizar diagramas ASCII basados en espacios salvo que exista una razón técnica para no utilizar Mermaid, ni estilos, colores o decoraciones innecesarias.
 
 No reformatear un documento completo cuando solamente se necesita modificar una sección.
 
@@ -133,17 +136,11 @@ Consultar la arquitectura activa antes de asumir hardware, almacenamiento o serv
 
 Arquitectura actual de salida:
 
-```text
-Aplicaciones
-     │
-     ▼
-  Stalwart
-     │
-     ▼
-   Brevo
-     │
-     ▼
- Internet
+```mermaid
+flowchart LR
+    aplicaciones[Aplicaciones] --> stalwart[Stalwart]
+    stalwart --> brevo[Brevo]
+    brevo --> internet[Internet]
 ```
 
 Stalwart actúa como servidor SMTP central y Brevo como relay SMTP externo.
