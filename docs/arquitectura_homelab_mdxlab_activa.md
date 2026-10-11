@@ -298,8 +298,17 @@ Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 | Proyecto | `~/homelab/uptime-kuma/` |
 | Integración | Homarr mediante página de estado de Uptime Kuma |
 | Alertas | Telegram verificado |
+| Monitor web de Pi-hole | HTTP GET a `http://pi.hole/admin/login`, cada 60 segundos; operativo |
+| Monitor de Immich | HTTP GET a `https://im.mdxlab.dev/api/server/ping`, cada 60 segundos; operativo por la ruta pública |
+| Monitor de Nextcloud | HTTP GET a `https://nc.mdxlab.dev/status.php`, cada 60 segundos; operativo por la ruta pública |
+| Monitor de Homarr | HTTP GET a `https://hr.mdxlab.dev`, cada 60 segundos; operativo en LAN con validación TLS |
+| Monitor de Vaultwarden | HTTP GET a `https://vw.mdxlab.dev/alive`, cada 60 segundos; operativo en LAN con validación TLS |
+| Monitor de FileBrowser Quantum | HTTP GET a `https://fl.mdxlab.dev`, cada 60 segundos; operativo en LAN con validación TLS |
+| Monitor de Nginx Proxy Manager | HTTP GET a `https://npm.mdxlab.dev`, cada 60 segundos; operativo en LAN con validación TLS |
+| Monitor de Stalwart | HTTP GET a `https://stt.mdxlab.dev`, cada 60 segundos; interfaz web operativa en LAN con validación TLS |
+| DNS | Sin override en Compose; resolución de `pi.hole` a `192.168.0.102` verificada desde el contenedor |
 
-La migración desde Uptime Kuma `1.23.17` a `2.5.3` se completó correctamente. Los monitores heredados de servicios anteriores permanecen pendientes de sustituirse por los monitores actuales del homelab.
+La migración desde Uptime Kuma `1.23.17` a `2.5.3` se completó correctamente. Se mantiene un único monitor por servicio. Jellyfin no está desplegado en esta infraestructura; su monitor heredado permanece pausado.
 
 ### Vaultwarden
 

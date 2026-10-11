@@ -45,6 +45,12 @@
 | Revisar SSD adicional de ~500 GB | Pendiente |
 | Evaluar Raspberry Pi / mini-PC / ThinkCentre para futuras funciones | Pendiente |
 
+### Monitorización de servicios
+
+| Mejora | Estado | Nota |
+|---|---|---|
+| Actualizar monitores de Uptime Kuma | Completado | Todos los monitores activos en verde, con un único monitor por servicio. MariaDB conserva su monitor; Nextcloud e Immich se comprueban por la ruta pública y las demás interfaces web por LAN. Jellyfin no está desplegado y su monitor permanece pausado. |
+
 ---
 
 ## 3. Registro histórico
@@ -72,6 +78,14 @@
 **Cambio:** Se actualizó Uptime Kuma de `1.23.17` a `2.5.3`, se habilitó su acceso LAN mediante `uk.mdxlab.dev` y se integró con Homarr.
 
 **Resultado:** Servicio operativo con alertas de Telegram verificadas. La sustitución de monitores heredados por los servicios actuales del homelab permanece pendiente.
+
+### 2026-10 — Resolución DNS de Pi-hole desde Uptime Kuma
+
+**Problema:** El monitor web de Pi-hole fallaba porque el contenedor no resolvía `pi.hole`; Docker reenviaba las consultas a DNS públicos, aunque el servidor tenía Pi-hole como DNS.
+
+**Resolución:** Se recreó únicamente el contenedor de Uptime Kuma, sin añadir un DNS explícito al Compose.
+
+**Resultado:** Resolución de `pi.hole` a `192.168.0.102` verificada y monitor HTTP operativo mediante el nombre local.
 
 ### 2026-08 — Infraestructura de correo Stalwart + Brevo
 
