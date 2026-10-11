@@ -17,6 +17,7 @@ flowchart TB
         npm --> npm_ui[NPM]
         npm --> filebrowser[FileBrowser Quantum]
         npm --> homarr[Homarr]
+        npm --> uptime_kuma[Uptime Kuma]
         npm --> vaultwarden[Vaultwarden]
         npm --> stalwart[Stalwart]
     end
@@ -65,6 +66,7 @@ flowchart TB
 |  | Cloudflared |
 |  | FileBrowser Quantum |
 |  | Homarr |
+|  | Uptime Kuma |
 |  | Vaultwarden |
 |  | Stalwart |
 
@@ -106,6 +108,7 @@ El `TL-SF1005D` limita actualmente el segmento cableado a **100 Mbps**.
 | Nginx Proxy Manager | `npm.mdxlab.dev` | — | Solo LAN |
 | FileBrowser Quantum | `fl.mdxlab.dev` | — | Solo LAN |
 | Homarr | `hr.mdxlab.dev` | — | Solo LAN |
+| Uptime Kuma | `uk.mdxlab.dev` | — | Solo LAN |
 | Vaultwarden | `vw.mdxlab.dev` | — | Solo LAN |
 | Stalwart | `stt.mdxlab.dev` | — | Solo LAN |
 
@@ -162,6 +165,7 @@ flowchart LR
 | `npm.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `fl.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `hr.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
+| `uk.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `vw.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `stt.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `nc.mdxlab.dev` | DNS público de Cloudflare |
@@ -206,6 +210,7 @@ mdxlab.dev
 | `npm.mdxlab.dev` | Nginx Proxy Manager | HTTP | `192.168.0.103:81` |
 | `fl.mdxlab.dev` | FileBrowser Quantum | Configurado | Host port según despliegue |
 | `hr.mdxlab.dev` | Homarr | HTTP | `192.168.0.103:7575` |
+| `uk.mdxlab.dev` | Uptime Kuma | HTTP | `192.168.0.103:3001` |
 | `vw.mdxlab.dev` | Vaultwarden | HTTP | `192.168.0.103:8222` |
 | `stt.mdxlab.dev` | Stalwart WebUI | HTTP | `192.168.0.103:8080` |
 
@@ -234,6 +239,7 @@ Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 | Immich | `DEV_PROJECTS/immich-deploy/` | `/mnt/hdd/data_services/immich/` | `2283` |
 | FileBrowser Quantum | `~/homelab/filebrowser/` | `/mnt/hdd/data_services/filebrowser/` | Según Compose |
 | Homarr | `~/homelab/homarr/` | `/mnt/hdd/data_services/homarr/appdata/` | `7575` |
+| Uptime Kuma | `~/homelab/uptime-kuma/` | `/mnt/hdd/data_services/uptime-kuma/` | `3001` |
 | Vaultwarden | `~/homelab/vaultwarden/` | `/mnt/hdd/data_services/vaultwarden/` | `8222` |
 | Stalwart | `~/homelab/stalwart/` | `/mnt/hdd/data_services/stalwart/config/` y `/mnt/hdd/data_services/stalwart/data/` | `465`, `8080` y listeners de correo |
 
@@ -247,6 +253,7 @@ Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 | Immich | Datos | `/mnt/hdd/data_services/immich/` |
 | FileBrowser Quantum | Persistencia | `/mnt/hdd/data_services/filebrowser/` |
 | Homarr | Appdata | `/mnt/hdd/data_services/homarr/appdata/` |
+| Uptime Kuma | Datos y configuración | `/mnt/hdd/data_services/uptime-kuma/` |
 | Vaultwarden | Datos | `/mnt/hdd/data_services/vaultwarden/` |
 | Stalwart | Configuración | `/mnt/hdd/data_services/stalwart/config/` |
 | Stalwart | Datos | `/mnt/hdd/data_services/stalwart/data/` |
@@ -278,6 +285,21 @@ Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 | Proyecto | `~/homelab/homarr/` |
 | Docker integration | Socket `/var/run/docker.sock` |
 | Secretos | `SECRET_ENCRYPTION_KEY` mediante `.env` |
+
+### Uptime Kuma
+
+| Parámetro | Valor |
+|---|---|
+| Imagen | `louislam/uptime-kuma:2.5.3` |
+| Contenedor | `uptime-kuma` |
+| Puerto | `3001` |
+| Acceso | `uk.mdxlab.dev` — solo LAN |
+| Persistencia | `/mnt/hdd/data_services/uptime-kuma/` |
+| Proyecto | `~/homelab/uptime-kuma/` |
+| Integración | Homarr mediante página de estado de Uptime Kuma |
+| Alertas | Telegram verificado |
+
+La migración desde Uptime Kuma `1.23.17` a `2.5.3` se completó correctamente. Los monitores heredados de servicios anteriores permanecen pendientes de sustituirse por los monitores actuales del homelab.
 
 ### Vaultwarden
 
@@ -391,6 +413,7 @@ flowchart TB
         npm --> immich[Immich]
         npm --> filebrowser[FileBrowser Quantum]
         npm --> homarr[Homarr]
+        npm --> uptime_kuma[Uptime Kuma]
         npm --> vaultwarden[Vaultwarden]
         npm --> stalwart[Stalwart]
     end

@@ -10,7 +10,7 @@
 | 1 | Homarr | ✅ Completado | Dashboard central del homelab |
 | 2 | Vaultwarden | ✅ Completado | Gestor de contraseñas self-hosted con correo funcional |
 | 3 | Stalwart / correo central | 🟡 Base funcional | Centralizar SMTP y salida mediante Brevo |
-| 4 | Uptime Kuma | ⏳ Pendiente | Monitorear disponibilidad de servicios |
+| 4 | Uptime Kuma | ✅ Completado | Monitorear disponibilidad de servicios |
 | 5 | Hardening / seguridad | ⏳ Pendiente | Revisar SSH, firewall, Docker, NPM/Cloudflare, usuarios y permisos |
 | 6 | Monitorización de hardware | ⏳ Pendiente | CPU, RAM, temperaturas, SMART, almacenamiento y red |
 | 7 | Evaluar servicios anteriores | ⏳ Pendiente | Revisar Jellyfin, Jellyseerr, Sonarr, Transmission, Kavita, Calibre, Firefly III, Wallos y otros |
@@ -66,6 +66,12 @@
 **Cambio:** Se desplegó Vaultwarden, se cerró el registro público, se habilitó el panel administrativo y posteriormente se integró con Stalwart para correo.
 
 **Resultado:** Operativo en `vw.mdxlab.dev`. Se verificaron tanto el Test SMTP como una invitación real de usuario.
+
+### 2026-09 — Uptime Kuma
+
+**Cambio:** Se actualizó Uptime Kuma de `1.23.17` a `2.5.3`, se habilitó su acceso LAN mediante `uk.mdxlab.dev` y se integró con Homarr.
+
+**Resultado:** Servicio operativo con alertas de Telegram verificadas. La sustitución de monitores heredados por los servicios actuales del homelab permanece pendiente.
 
 ### 2026-08 — Infraestructura de correo Stalwart + Brevo
 
