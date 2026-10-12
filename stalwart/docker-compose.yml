@@ -7,8 +7,6 @@ services:
     ports:
       # Administración / Web
       - "8080:8080"
-      # SMTP Submission
-      - "587:587"
       # SMTP Submission sobre TLS
       - "465:465"
       # --- Puertos reservados para uso futuro ---

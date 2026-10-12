@@ -242,7 +242,7 @@ Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 | Homarr | `~/homelab/homarr/` | `/mnt/hdd/data_services/homarr/appdata/` | `7575` |
 | Uptime Kuma | `~/homelab/uptime-kuma/` | `/mnt/hdd/data_services/uptime-kuma/` | `3001` |
 | Vaultwarden | `~/homelab/vaultwarden/` | `/mnt/hdd/data_services/vaultwarden/` | `8222` |
-| Stalwart | `~/homelab/stalwart/` | `/mnt/hdd/data_services/stalwart/config/` y `/mnt/hdd/data_services/stalwart/data/` | `465`, `8080` y listeners de correo |
+| Stalwart | `~/homelab/stalwart/` | `/mnt/hdd/data_services/stalwart/config/` y `/mnt/hdd/data_services/stalwart/data/` | `465` y `8080`; `587` no publicado en el host |
 
 ### Rutas específicas
 
@@ -367,6 +367,8 @@ flowchart LR
 | Ruta externa | `Brevo` |
 
 La integración web LAN de Stalwart está finalizada. `stt.mdxlab.dev` es exclusivamente el FQDN de acceso a la WebUI; `mail.mdxlab.dev` es la identidad SMTP del servidor y `mdxlab.dev` es el dominio de correo.
+
+El puerto de submission `587` no se publica en el Nodo 103 porque no hay clientes de correo conectados directamente a Stalwart; el relay saliente hacia Brevo usa `smtp-relay.brevo.com:587`.
 
 ### Listeners observados
 
