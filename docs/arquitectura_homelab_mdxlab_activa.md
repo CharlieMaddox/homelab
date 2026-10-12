@@ -230,6 +230,8 @@ El túnel `homelab` se ejecuta mediante `cloudflared` en Docker sobre el Nodo 10
 
 Solo Nextcloud e Immich están publicados mediante Cloudflare Tunnel.
 
+El router no mantiene puertos reenviados hacia el Nodo 103; el acceso público a Nextcloud e Immich se realiza exclusivamente mediante Cloudflare Tunnel.
+
 ---
 
 ## 10. Servicios Docker y persistencia
