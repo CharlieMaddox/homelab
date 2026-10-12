@@ -20,6 +20,7 @@ flowchart TB
         npm --> uptime_kuma[Uptime Kuma]
         npm --> vaultwarden[Vaultwarden]
         npm --> stalwart[Stalwart]
+        npm --> wallos[Wallos]
     end
 
     subgraph Publico[Acceso público]
@@ -112,6 +113,7 @@ El `TL-SF1005D` limita actualmente el segmento cableado a **100 Mbps**.
 | Uptime Kuma | `uk.mdxlab.dev` | — | Solo LAN |
 | Vaultwarden | `vw.mdxlab.dev` | — | Solo LAN |
 | Stalwart | `stt.mdxlab.dev` | — | Solo LAN |
+| Wallos | `wl.mdxlab.dev` | — | Solo LAN |
 
 Los dominios públicos `nc.mdxlab.dev` e `im.mdxlab.dev` **no tienen override DNS local en Pi-hole**.
 
@@ -169,6 +171,7 @@ flowchart LR
 | `uk.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `vw.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `stt.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
+| `wl.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `mail.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `nc.mdxlab.dev` | DNS público de Cloudflare |
 | `im.mdxlab.dev` | DNS público de Cloudflare |
@@ -215,6 +218,7 @@ mdxlab.dev
 | `uk.mdxlab.dev` | Uptime Kuma | HTTP | `192.168.0.103:3001` |
 | `vw.mdxlab.dev` | Vaultwarden | HTTP | `192.168.0.103:8222` |
 | `stt.mdxlab.dev` | Stalwart WebUI | HTTP | `192.168.0.103:8080` |
+| `wl.mdxlab.dev` | Wallos | HTTP | `192.168.0.103:8282` |
 
 > Immich en `2283` utiliza HTTP. Nextcloud utiliza HTTPS en `8450`.
 
@@ -288,8 +292,19 @@ El router no mantiene puertos reenviados hacia el Nodo 103; el acceso público a
 | Acceso | `hr.mdxlab.dev` — solo LAN |
 | Persistencia | `/mnt/hdd/data_services/homarr/appdata/` |
 | Proyecto | `~/homelab/homarr/` |
-| Docker integration | Socket `/var/run/docker.sock` |
+| Docker integration | No utiliza socket Docker |
 | Secretos | `SECRET_ENCRYPTION_KEY` mediante `.env` |
+
+### Wallos
+
+| Parámetro | Valor |
+|---|---|
+| Imagen | `bellamy/wallos:latest` |
+| Contenedor | `wallos` |
+| Puerto | `8282` |
+| Acceso | `wl.mdxlab.dev/login.php` — solo LAN |
+| Persistencia | `/mnt/hdd/data_services/wallos/db/` y `/mnt/hdd/data_services/wallos/logos/` |
+| Proyecto | `~/homelab/wallos/` |
 
 ### Uptime Kuma
 
@@ -311,6 +326,7 @@ El router no mantiene puertos reenviados hacia el Nodo 103; el acceso público a
 | Monitor de FileBrowser Quantum | HTTP GET a `https://fl.mdxlab.dev`, cada 60 segundos; operativo en LAN con validación TLS |
 | Monitor de Nginx Proxy Manager | HTTP GET a `https://npm.mdxlab.dev`, cada 60 segundos; operativo en LAN con validación TLS |
 | Monitor de Stalwart | HTTP GET a `https://stt.mdxlab.dev`, cada 60 segundos; interfaz web operativa en LAN con validación TLS |
+| Monitor de Wallos | HTTP GET a `https://wl.mdxlab.dev/login.php`, cada 60 segundos; operativo en LAN con validación TLS |
 | DNS | Sin override en Compose; resolución de `pi.hole` a `192.168.0.102` verificada desde el contenedor |
 
 La migración desde Uptime Kuma `1.23.17` a `2.5.3` se completó correctamente. Se mantiene un único monitor por servicio. Jellyfin no está desplegado en esta infraestructura; su monitor heredado permanece pausado.

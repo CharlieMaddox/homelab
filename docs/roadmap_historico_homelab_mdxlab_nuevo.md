@@ -93,6 +93,12 @@
 
 **Resultado:** TLS validado con `Verify return code: 0 (ok)` y prueba SMTP de Vaultwarden completada. Se retiraron las excepciones para certificados y hostnames inválidos.
 
+### 2026-10 — Integración de Wallos
+
+**Cambio:** Wallos se mantuvo como servicio activo en `wl.mdxlab.dev` y se incorporó a Nginx Proxy Manager, Uptime Kuma y Homarr.
+
+**Resultado:** Acceso LAN por HTTPS y monitor HTTP operativo en verde.
+
 ### 2026-08 — Infraestructura de correo Stalwart + Brevo
 
 **Cambio:** Se implementó Stalwart como servidor SMTP central. Brevo fue elegido como relay externo después de evaluar otras alternativas; SMTP2GO se descartó por restricciones de verificación SMS para México.
