@@ -13,7 +13,7 @@
 | 4 | Uptime Kuma | ✅ Completado | Monitorear disponibilidad de servicios |
 | 5 | Hardening / seguridad | ⏳ Pendiente | Revisar SSH, firewall, Docker, NPM/Cloudflare, usuarios y permisos |
 | 6 | Monitorización de hardware | ⏳ Pendiente | CPU, RAM, temperaturas, SMART, almacenamiento y red |
-| 7 | Evaluar servicios anteriores | ⏳ Pendiente | Revisar Jellyfin, Jellyseerr, Sonarr, Transmission, Kavita, Calibre, Firefly III, Wallos y otros |
+| 7 | Evaluar servicios anteriores | ⏳ Pendiente | Revisar Jellyfin, Jellyseerr, Sonarr, Transmission, Kavita, Calibre, Firefly III y otros; Wallos se mantiene activo |
 | 8 | Backups | ⏳ Pendiente | Diseñar estrategia de respaldo, retención y restauración |
 
 ---

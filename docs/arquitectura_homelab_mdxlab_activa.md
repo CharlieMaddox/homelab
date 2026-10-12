@@ -69,6 +69,7 @@ flowchart TB
 |  | Uptime Kuma |
 |  | Vaultwarden |
 |  | Stalwart |
+|  | Wallos (`8282`) |
 
 > Nextcloud mantiene su base de datos en MariaDB sobre el Nodo 102 (`192.168.0.102:3306`).
 
@@ -245,6 +246,7 @@ El router no mantiene puertos reenviados hacia el Nodo 103; el acceso público a
 | Uptime Kuma | `~/homelab/uptime-kuma/` | `/mnt/hdd/data_services/uptime-kuma/` | `3001` |
 | Vaultwarden | `~/homelab/vaultwarden/` | `/mnt/hdd/data_services/vaultwarden/` | `8222` |
 | Stalwart | `~/homelab/stalwart/` | `/mnt/hdd/data_services/stalwart/config/` y `/mnt/hdd/data_services/stalwart/data/` | `465` y `8080`; `587` no publicado en el host |
+| Wallos | `~/homelab/wallos/` | `/mnt/hdd/data_services/wallos/db/` y `/mnt/hdd/data_services/wallos/logos/` | `8282` |
 
 ### Rutas específicas
 
