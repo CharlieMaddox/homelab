@@ -168,6 +168,7 @@ flowchart LR
 | `uk.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `vw.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `stt.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
+| `mail.mdxlab.dev` | `192.168.0.103` vía Pi-hole |
 | `nc.mdxlab.dev` | DNS público de Cloudflare |
 | `im.mdxlab.dev` | DNS público de Cloudflare |
 
@@ -324,7 +325,7 @@ La migración desde Uptime Kuma `1.23.17` a `2.5.3` se completó correctamente. 
 | Proyecto | `~/homelab/vaultwarden/` |
 | Registro público | Desactivado (`SIGNUPS_ALLOWED=false`) |
 | Panel administrativo | `/admin` habilitado |
-| SMTP | Stalwart `192.168.0.103:465`, TLS implícito |
+| SMTP | Stalwart `mail.mdxlab.dev:465`, TLS implícito validado |
 | Cuenta SMTP | `noreply@mdxlab.dev` |
 | Prueba real | Test SMTP e invitación de usuario entregados correctamente |
 
@@ -354,9 +355,9 @@ flowchart LR
 | Dominio por defecto | `mdxlab.dev` |
 | Almacenamiento | RocksDB |
 | Directorio de cuentas | Interno |
-| TLS automático | Desactivado |
+| TLS automático | Activado mediante Let’s Encrypt para `mail.mdxlab.dev` y desafío DNS-01 con Cloudflare |
 | DKIM automático | Activado |
-| Gestión DNS | Manual |
+| Gestión DNS | Automática mediante proveedor Cloudflare; publicación limitada a CAA |
 | Cuenta de servicio | `noreply@mdxlab.dev` |
 | Logging | `Console / Info` |
 | Relay externo | Brevo |
@@ -405,7 +406,7 @@ Los MX públicos de `mdxlab.dev` permanecen en **Cloudflare Email Routing**, no 
 - Stalwart usa **RocksDB local**, evitando dependencia de MariaDB del Nodo 102.
 - Las aplicaciones deben autenticarse contra **Stalwart**, no directamente contra Brevo.
 - Vaultwarden usa actualmente Stalwart por `465` con TLS implícito.
-- Mientras Stalwart no disponga de un certificado público válido, Vaultwarden acepta temporalmente certificado/hostname no válidos para esa conexión interna.
+- Vaultwarden valida el certificado de Let’s Encrypt de Stalwart mediante `mail.mdxlab.dev:465`.
 - Los logs de Stalwart se escriben a consola y se consultan mediante Docker.
 - Los MX públicos continúan apuntando a Cloudflare Email Routing.
 - Las pruebas reales hacia Microsoft mostraron `SPF=pass`, `DKIM=pass`, `DMARC=pass` y `CompAuth=pass`.

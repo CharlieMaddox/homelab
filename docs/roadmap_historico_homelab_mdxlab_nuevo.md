@@ -24,7 +24,7 @@
 
 | Mejora | Estado | Nota |
 |---|---|---|
-| Certificado TLS válido para Stalwart | Pendiente | Evaluar reutilizar el wildcard `*.mdxlab.dev` administrado por NPM |
+| Certificado TLS válido para Stalwart | Completado | Certificado dedicado de Let’s Encrypt para `mail.mdxlab.dev`, emitido mediante DNS-01 con Cloudflare |
 | Deliverability hacia Microsoft | Pendiente | Los mensajes llegan a No deseado pese a SPF/DKIM/DMARC/CompAuth en PASS |
 | Tracking de Brevo | Evaluar | Brevo reescribe enlaces mediante su infraestructura de click tracking |
 | Nextcloud → Stalwart | Pendiente | Centralizar su correo saliente |
@@ -86,6 +86,12 @@
 **Resolución:** Se recreó únicamente el contenedor de Uptime Kuma, sin añadir un DNS explícito al Compose.
 
 **Resultado:** Resolución de `pi.hole` a `192.168.0.102` verificada y monitor HTTP operativo mediante el nombre local.
+
+### 2026-10 — TLS SMTP de Vaultwarden y Stalwart
+
+**Cambio:** Stalwart empezó a gestionar automáticamente un certificado Let’s Encrypt para `mail.mdxlab.dev` mediante DNS-01 con Cloudflare; Vaultwarden pasó a usar ese hostname por SMTP `465`.
+
+**Resultado:** TLS validado con `Verify return code: 0 (ok)` y prueba SMTP de Vaultwarden completada. Se retiraron las excepciones para certificados y hostnames inválidos.
 
 ### 2026-08 — Infraestructura de correo Stalwart + Brevo
 
